@@ -5,6 +5,10 @@ using DevExpress.Persistent.BaseImpl.EF.PermissionPolicy;
 using DevExpress.Persistent.BaseImpl.EF;
 using DevExpress.ExpressApp.Design;
 using DevExpress.ExpressApp.EFCore.DesignTime;
+using BIT.EfCore.Sync;
+using Microsoft.Extensions.DependencyInjection;
+using BIT.Data.Sync.EfCore.SqlServer;
+using Microsoft.Extensions.Options;
 
 namespace XafEfCoreSync.Module.BusinessObjects;
 
@@ -31,13 +35,44 @@ public class XafEfCoreSyncDesignTimeDbContextFactory : IDesignTimeDbContextFacto
 	}
 }
 [TypesInfoInitializer(typeof(XafEfCoreSyncContextInitializer))]
-public class XafEfCoreSyncEFCoreDbContext : DbContext {
-	public XafEfCoreSyncEFCoreDbContext(DbContextOptions<XafEfCoreSyncEFCoreDbContext> options) : base(options) {
-	}
-	//public DbSet<ModuleInfo> ModulesInfo { get; set; }
+public class XafEfCoreSyncEFCoreDbContext : SyncFrameworkDbContext
+{
+	public XafEfCoreSyncEFCoreDbContext(DbContextOptions<XafEfCoreSyncEFCoreDbContext> options) : base(options,null)
+	{
+        List<DeltaGeneratorBase> DeltaGenerators = new List<DeltaGeneratorBase>();
+        DeltaGenerators.Add(new SqlServerDeltaGenerator());
+        DeltaGeneratorBase[] additionalDeltaGenerators = DeltaGenerators.ToArray();
 
+        HttpClient Client = new HttpClient();
+        ServiceCollection ServiceCollectionMaster = new ServiceCollection();
+        //ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseInMemoryDatabase("MemoryDb2"); }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
+        ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=XafEfMasterDeltas;Trusted_Connection=True;");  }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
+        ServiceCollectionMaster.AddEntityFrameworkSqlServer();
+        ServiceCollectionMaster.AddEntityFrameworkProxies();
+        ServiceCollectionMaster.AddXafServiceProviderContainer();
+        this.serviceProvider = ServiceCollectionMaster.BuildServiceProvider();
+
+
+    }
+    //public DbSet<ModuleInfo> ModulesInfo { get; set; }
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+      
+
+
+
+        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=XafEfMaster;Trusted_Connection=True;");
+        optionsBuilder.UseChangeTrackingProxies();
+        optionsBuilder.UseObjectSpaceLinkProxies();
+
+
+
+
+        base.OnConfiguring(optionsBuilder);
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasChangeTrackingStrategy(ChangeTrackingStrategy.ChangingAndChangedNotificationsWithOriginalValues);
     }
+    public DbSet<Blog> Blogs { get; set; }
 }
