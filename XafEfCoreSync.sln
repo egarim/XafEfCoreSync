@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XafEfCoreSync.Blazor.Server
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SyncServer", "SyncServer\SyncServer.csproj", "{77033557-2B11-4E82-AAFC-03F1EF1ED934}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MAUI", "MAUI", "{A7CD1B52-76E9-41B3-B0DA-8535F08382E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiSync", "MauiSync\MauiSync.csproj", "{2B199330-3740-4840-BC34-EA604C41FF53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,9 +46,21 @@ Global
 		{77033557-2B11-4E82-AAFC-03F1EF1ED934}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
 		{77033557-2B11-4E82-AAFC-03F1EF1ED934}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77033557-2B11-4E82-AAFC-03F1EF1ED934}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.EasyTest|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.EasyTest|Any CPU.Build.0 = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.EasyTest|Any CPU.Deploy.0 = Debug|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B199330-3740-4840-BC34-EA604C41FF53}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2B199330-3740-4840-BC34-EA604C41FF53} = {A7CD1B52-76E9-41B3-B0DA-8535F08382E3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {16D74190-4228-4CA8-BA79-1C9DC78EF0CF}
