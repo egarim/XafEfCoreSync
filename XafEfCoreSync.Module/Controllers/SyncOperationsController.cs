@@ -41,23 +41,48 @@ namespace XafEfCoreSync.Module.Controllers
         private async void Pull_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
             await node.PullAsync();
+            ShowMessage("Pull...Done!");
+            refreshController.RefreshAction.DoExecute();
         }
         private async void Push_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
           
             await  node.PushAsync();
-            
+            ShowMessage("Push...Done!");
+
+
+        }
+        void ShowMessage(string Message)
+        {
+            MessageOptions options = new MessageOptions();
+            options.Duration = 2000;
+            options.Message = Message;
+            options.Type = InformationType.Success;
+            options.Web.Position = InformationPosition.Right;
+            options.Win.Caption = "Success";
+            options.Win.Type = WinMessageType.Toast;
+            options.OkDelegate = () => {
+                
+            };
+            Application.ShowViewStrategy.ShowMessage(options);
         }
         EFCoreObjectSpace currentEfObjectSpace;
         ISyncClientNode node;
+        RefreshController refreshController;
         protected override void OnActivated()
         {
             base.OnActivated();
-            currentEfObjectSpace = this.ObjectSpace as EFCoreObjectSpace;
-            node = currentEfObjectSpace.DbContext as ISyncClientNode;
-
+            GetNode();
+            refreshController = this.Frame.GetController<RefreshController>();
             // Perform various tasks depending on the target View.
         }
+
+        private void GetNode()
+        {
+            currentEfObjectSpace = this.Application.CreateObjectSpace(typeof(Blog)) as EFCoreObjectSpace;
+            node = currentEfObjectSpace.DbContext as ISyncClientNode;
+        }
+
         protected override void OnViewControlsCreated()
         {
             base.OnViewControlsCreated();

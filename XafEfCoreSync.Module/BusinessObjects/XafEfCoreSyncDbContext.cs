@@ -46,7 +46,14 @@ public class XafEfCoreSyncEFCoreDbContext : SyncFrameworkDbContext
         DeltaGeneratorBase[] additionalDeltaGenerators = DeltaGenerators.ToArray();
 
         HttpClient Client = new HttpClient();
-        Client.BaseAddress =new Uri("https://localhost:44343");
+        
+
+        //Local Computer
+        //Client.BaseAddress = new Uri("https://localhost:44343
+
+        //Joche Dev Tunnel
+        Client.BaseAddress = new Uri("https://hj6z9022-44343.use.devtunnels.ms/");
+
         ServiceCollection ServiceCollectionMaster = new ServiceCollection();
         //ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseInMemoryDatabase("MemoryDb2"); }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
         ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=XafEfMasterDeltas;Trusted_Connection=True;");  }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
