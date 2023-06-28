@@ -9,6 +9,7 @@ using BIT.EfCore.Sync;
 using Microsoft.Extensions.DependencyInjection;
 using BIT.Data.Sync.EfCore.SqlServer;
 using Microsoft.Extensions.Options;
+using BIT.Data.Sync.EfCore.Sqlite;
 
 namespace XafEfCoreSync.Module.BusinessObjects;
 
@@ -41,6 +42,7 @@ public class XafEfCoreSyncEFCoreDbContext : SyncFrameworkDbContext
 	{
         List<DeltaGeneratorBase> DeltaGenerators = new List<DeltaGeneratorBase>();
         DeltaGenerators.Add(new SqlServerDeltaGenerator());
+        DeltaGenerators.Add(new SqliteDeltaGenerator());
         DeltaGeneratorBase[] additionalDeltaGenerators = DeltaGenerators.ToArray();
 
         HttpClient Client = new HttpClient();

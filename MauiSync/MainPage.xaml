@@ -38,19 +38,17 @@
                 <Button
                 x:Name="SaveBtn"
                 Text="Save"
-                Clicked="OnCounterClicked"
+                Clicked="SaveClicked"
                 HorizontalOptions="Center" />
                 <Button
                 x:Name="PullBtn"
                 Text="Pull"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
+                Clicked="PullClicked"
                 HorizontalOptions="Center" />
                 <Button
                 x:Name="PushBtn"
                 Text="Push"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
+                Clicked="PushClicked"
                 HorizontalOptions="Center" />
             </StackLayout>
             <ListView x:Name="BlogsList">
