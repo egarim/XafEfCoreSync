@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using XafEfCoreSync.Module.BusinessObjects;
+using static DevExpress.Office.Drawing.LazyGroupBrush;
 
 namespace MauiSync
 {
@@ -21,10 +22,21 @@ namespace MauiSync
         {
             InitializeComponent();
 
+            
+        }
+        protected async override void OnAppearing()
+        {
+            await CreateInstanceAsync();
+            base.OnAppearing();
+        }
+        public Task Initialize { get; }
+        private async Task CreateInstanceAsync()
+        {
+            await CheckWriteStoragePermission();
             Debug.WriteLine($"DeltasPath:{DeltasPath}");
             Debug.WriteLine($"DataPath:{DataPath}");
             //this.dataContext=GetContext();
-            using (var context= GetContext())
+            using (var context = GetContext())
             {
                 //context.Database.EnsureCreated();
                 if (context.Blogs.Count() == 0)
@@ -40,15 +52,44 @@ namespace MauiSync
                     blogs.Add(item);
                 });
             }
-           
+
 
             this.BlogsList.ItemsSource = blogs;
         }
 
+        public async Task<PermissionStatus> CheckWriteStoragePermission()
+        {
+            PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
+            {
+                // Prompt the user with additional information as to why the permission is needed
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
+        }
+     
         private MauiSyncFrameworkDbContext GetContext()
         {
+            var AndroidPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             DbContextOptionsBuilder OptionsBuilder = new DbContextOptionsBuilder();
-            const string ConnectionString = "Data Source=MauiData.db;";
+            //const string ConnectionString = $"Data Source=MauiData.db;";
+
+            var AndroidDataPath = Path.Combine(AndroidPath, "MauiData.db");
+            string ConnectionString = $"Data Source={AndroidDataPath};";
+
             OptionsBuilder.UseSqlite(ConnectionString);
 
             HttpClient Client = new HttpClient();
@@ -66,7 +107,10 @@ namespace MauiSync
             ServiceCollection ServiceCollection = new ServiceCollection();
             ServiceCollection.AddEfSynchronization((options) =>
             {
-                options.UseSqlite("Data Source=MauiDeltas.db;");
+                var AndroidDataDelta = Path.Combine(AndroidPath, "MauiDelta.db");
+                string ConnectionString = $"Data Source={AndroidDataDelta};";
+                //options.UseSqlite("Data Source=MauiDeltas.db;");
+                options.UseSqlite(ConnectionString);
             },
             Client, "MemoryDeltaStore1",
             "Maui",
