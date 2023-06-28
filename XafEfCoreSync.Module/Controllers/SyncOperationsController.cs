@@ -22,6 +22,7 @@ namespace XafEfCoreSync.Module.Controllers
     // For more typical usage scenarios, be sure to check out https://documentation.devexpress.com/eXpressAppFramework/clsDevExpressExpressAppViewControllertopic.aspx.
     public partial class SyncOperationsController : ViewController
     {
+        SimpleAction Pull;
         SimpleAction Push;
         // Use CodeRush to create Controllers and Actions with a few keystrokes.
         // https://docs.devexpress.com/CodeRushForRoslyn/403133/
@@ -31,14 +32,21 @@ namespace XafEfCoreSync.Module.Controllers
             this.TargetObjectType = typeof(Blog);
             Push = new SimpleAction(this, "Push", "View");
             Push.Execute += Push_Execute;
+            Pull = new SimpleAction(this, "Pull", "View");
+            Pull.Execute += Pull_Execute;
             
+
             // Target required Views (via the TargetXXX properties) and create their Actions.
         }
-        private void Push_Execute(object sender, SimpleActionExecuteEventArgs e)
+        private async void Pull_Execute(object sender, SimpleActionExecuteEventArgs e)
+        {
+            await node.PullAsync();
+        }
+        private async void Push_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
           
-            node.PushAsync();
-            // Execute your business logic (https://docs.devexpress.com/eXpressAppFramework/112737/).
+            await  node.PushAsync();
+            
         }
         EFCoreObjectSpace currentEfObjectSpace;
         ISyncClientNode node;
