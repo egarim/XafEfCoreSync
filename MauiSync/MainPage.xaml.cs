@@ -33,12 +33,14 @@ namespace MauiSync
         private async Task CreateInstanceAsync()
         {
             await CheckWriteStoragePermission();
+
             Debug.WriteLine($"DeltasPath:{DeltasPath}");
             Debug.WriteLine($"DataPath:{DataPath}");
-            //this.dataContext=GetContext();
+
+           
             using (var context = GetContext())
             {
-                //context.Database.EnsureCreated();
+                
                 if (context.Blogs.Count() == 0)
                 {
                     context.Add(new Blog() { Name = "Maui" });
@@ -87,12 +89,25 @@ namespace MauiSync
             DbContextOptionsBuilder OptionsBuilder = new DbContextOptionsBuilder();
             //const string ConnectionString = $"Data Source=MauiData.db;";
 
-            var AndroidDataPath = Path.Combine(AndroidPath, "MauiData.db");
-            string ConnectionString = $"Data Source={AndroidDataPath};";
+            string ConnectionString;
+            if (DeviceInfo.Platform == DevicePlatform.Android)
+            {
+                var AndroidDataPath = Path.Combine(AndroidPath, "MauiData.db");
+                ConnectionString = $"Data Source={AndroidDataPath};";
+            }
+            else
+            {
+                ConnectionString = $"Data Source={DataPath};";
+            }
+
+
+            
+           
 
             OptionsBuilder.UseSqlite(ConnectionString);
 
             HttpClient Client = new HttpClient();
+
             //Local Computer
             //Client.BaseAddress = new Uri("https://localhost:44343
 
@@ -107,9 +122,17 @@ namespace MauiSync
             ServiceCollection ServiceCollection = new ServiceCollection();
             ServiceCollection.AddEfSynchronization((options) =>
             {
-                var AndroidDataDelta = Path.Combine(AndroidPath, "MauiDelta.db");
-                string ConnectionString = $"Data Source={AndroidDataDelta};";
-                //options.UseSqlite("Data Source=MauiDeltas.db;");
+                string ConnectionString;
+                if (DeviceInfo.Platform == DevicePlatform.Android)
+                {
+                    var AndroidDataDelta = Path.Combine(AndroidPath, "MauiDelta.db");
+                    ConnectionString = $"Data Source={AndroidDataDelta};";
+                }
+                else
+                {
+                    ConnectionString = $"Data Source={DeltasPath};";
+                }
+
                 options.UseSqlite(ConnectionString);
             },
             Client, "MemoryDeltaStore1",
