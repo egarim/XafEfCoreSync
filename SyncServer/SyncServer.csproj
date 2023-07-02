@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BIT.Data.Sync.EfCore" Version="7.0.3" />
+    <PackageReference Include="BIT.Data.Sync.EfCore" Version="7.0.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
   </ItemGroup>
 

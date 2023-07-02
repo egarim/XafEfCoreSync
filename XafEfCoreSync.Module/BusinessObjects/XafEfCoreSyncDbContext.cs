@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using BIT.Data.Sync.EfCore.SqlServer;
 using Microsoft.Extensions.Options;
 using BIT.Data.Sync.EfCore.Sqlite;
+using BIT.Data.Sync.Imp;
+using BIT.Data.Sync;
 
 namespace XafEfCoreSync.Module.BusinessObjects;
 
@@ -49,18 +51,25 @@ public class XafEfCoreSyncEFCoreDbContext : SyncFrameworkDbContext
         
 
         //Local Computer
-        //Client.BaseAddress = new Uri("https://localhost:44343
+        Client.BaseAddress = new Uri("https://localhost:44343");
 
         //Joche Dev Tunnel
-        Client.BaseAddress = new Uri("https://hj6z9022-44343.use.devtunnels.ms/");
+        //Client.BaseAddress = new Uri("https://hj6z9022-44343.use.devtunnels.ms/");
 
-        ServiceCollection ServiceCollectionMaster = new ServiceCollection();
+        ServiceCollection ServiceCollection = new ServiceCollection();
         //ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseInMemoryDatabase("MemoryDb2"); }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
-        ServiceCollectionMaster.AddEfSynchronization((options) => { options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=XafEfMasterDeltas;Trusted_Connection=True;");  }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
-        ServiceCollectionMaster.AddEntityFrameworkSqlServer();
-        ServiceCollectionMaster.AddEntityFrameworkProxies();
-        ServiceCollectionMaster.AddXafServiceProviderContainer();
-        this.serviceProvider = ServiceCollectionMaster.BuildServiceProvider();
+        ServiceCollection.AddEfSynchronization((options) => { options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=XafEfMasterDeltas;Trusted_Connection=True;");  }, Client, "MemoryDeltaStore1", "Master", additionalDeltaGenerators);
+        ServiceCollection.AddEntityFrameworkSqlServer();
+        ServiceCollection.AddEntityFrameworkProxies();
+        ServiceCollection.AddXafServiceProviderContainer();
+
+        YearSequencePrefixStrategy implementationInstance = new YearSequencePrefixStrategy();
+        ServiceCollection.AddSingleton(typeof(ISequencePrefixStrategy), implementationInstance);
+        ServiceCollection.AddSingleton(typeof(ISequenceService), typeof(EfSequenceService));
+
+
+
+        this.serviceProvider = ServiceCollection.BuildServiceProvider();
 
 
     }

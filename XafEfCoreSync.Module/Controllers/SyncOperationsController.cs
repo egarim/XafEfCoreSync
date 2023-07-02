@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using XafEfCoreSync.Module.BusinessObjects;
 
 namespace XafEfCoreSync.Module.Controllers
@@ -40,14 +41,28 @@ namespace XafEfCoreSync.Module.Controllers
         }
         private async void Pull_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
+            GetNode();
             await node.PullAsync();
             ShowMessage("Pull...Done!");
             refreshController.RefreshAction.DoExecute();
         }
         private async void Push_Execute(object sender, SimpleActionExecuteEventArgs e)
         {
-          
-            await  node.PushAsync();
+
+            GetNode();
+            //var Deltas=await node.DeltaStore.GetDeltasAsync(Guid.Empty, CancellationToken.None);
+
+            var LastPushedDelta = await node.DeltaStore.GetLastPushedDeltaAsync(node.Identity, CancellationToken.None).ConfigureAwait(false);
+            var Deltas = await node.DeltaStore.GetDeltasByIdentityAsync(LastPushedDelta, node.Identity, CancellationToken.None).ConfigureAwait(false);
+            if (Deltas.Any())
+            {
+                var Max = Deltas.Max(d => d.Index);
+                await node.SyncFrameworkClient.PushAsync(Deltas, CancellationToken.None).ConfigureAwait(false);
+                await node.DeltaStore.SetLastPushedDeltaAsync(Max, node.Identity, CancellationToken.None).ConfigureAwait(false);
+            }
+
+
+            //await  node.PushAsync();
             ShowMessage("Push...Done!");
 
 

@@ -57,7 +57,7 @@ namespace BIT.Data.Sync.EfCore.Tests.Controllers
             }
         }
         [HttpGet("Fetch")]
-        public async Task<string> Fetch(Guid startindex, string identity = null)
+        public async Task<string> Fetch(string startindex, string identity = null)
         {
             string NodeId = GetHeader("NodeId");
             var Message = $"Fetch from node:{NodeId}{Environment.NewLine}Start delta index:{startindex}{Environment.NewLine}Client identity:{identity}";

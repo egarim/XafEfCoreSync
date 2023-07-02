@@ -1,6 +1,8 @@
-﻿using BIT.Data.Sync.Client;
+﻿using BIT.Data.Sync;
+using BIT.Data.Sync.Client;
 using BIT.Data.Sync.EfCore.Sqlite;
 using BIT.Data.Sync.EfCore.SqlServer;
+using BIT.Data.Sync.Imp;
 using BIT.EfCore.Sync;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
@@ -85,6 +87,7 @@ namespace MauiSync
      
         private MauiSyncFrameworkDbContext GetContext()
         {
+
             var AndroidPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
             DbContextOptionsBuilder OptionsBuilder = new DbContextOptionsBuilder();
             //const string ConnectionString = $"Data Source=MauiData.db;";
@@ -109,10 +112,10 @@ namespace MauiSync
             HttpClient Client = new HttpClient();
 
             //Local Computer
-            //Client.BaseAddress = new Uri("https://localhost:44343
+            Client.BaseAddress = new Uri("https://localhost:44343");
 
             //Joche Dev Tunnel
-            Client.BaseAddress = new Uri("https://hj6z9022-44343.use.devtunnels.ms/");
+            //Client.BaseAddress = new Uri("https://hj6z9022-44343.use.devtunnels.ms/");
             
             List<DeltaGeneratorBase> DeltaGenerators = new List<DeltaGeneratorBase>();
             DeltaGenerators.Add(new SqliteDeltaGenerator());
@@ -120,6 +123,11 @@ namespace MauiSync
             DeltaGeneratorBase[] additionalDeltaGenerators = DeltaGenerators.ToArray();
 
             ServiceCollection ServiceCollection = new ServiceCollection();
+
+            YearSequencePrefixStrategy implementationInstance = new YearSequencePrefixStrategy();
+            ServiceCollection.AddSingleton(typeof(ISequencePrefixStrategy), implementationInstance);
+            ServiceCollection.AddSingleton(typeof(ISequenceService), typeof(EfSequenceService));
+
             ServiceCollection.AddEfSynchronization((options) =>
             {
                 string ConnectionString;
