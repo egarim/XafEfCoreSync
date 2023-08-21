@@ -49,9 +49,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BIT.Data.Sync.EfCore" Version="7.0.3.1" />
-		<PackageReference Include="BIT.Data.Sync.EfCore.Sqlite" Version="7.0.3.1" />
-		<PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+		<PackageReference Include="BIT.Data.Sync.EfCore" Version="7.0.3.2" />
+		<PackageReference Include="BIT.Data.Sync.EfCore.Sqlite" Version="7.0.3.2" />
+		<PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 
 		<!--<PackageReference Include="SQLitePCLRaw.core" Version="2.1.4" />

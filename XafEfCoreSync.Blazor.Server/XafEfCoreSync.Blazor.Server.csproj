@@ -17,7 +17,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="BIT.Data.Sync.EfCore.SqlServer" Version="7.0.3.1" />
+    <PackageReference Include="BIT.Data.Sync.EfCore.SqlServer" Version="7.0.3.2" />
     <PackageReference Include="DevExpress.ExpressApp.Blazor" Version="23.1.2-beta" />
     <PackageReference Include="DevExpress.ExpressApp.CodeAnalysis" Version="23.1.2-beta" />
   </ItemGroup>

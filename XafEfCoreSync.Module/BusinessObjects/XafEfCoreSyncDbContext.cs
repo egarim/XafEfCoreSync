@@ -9,9 +9,10 @@ using BIT.EfCore.Sync;
 using Microsoft.Extensions.DependencyInjection;
 using BIT.Data.Sync.EfCore.SqlServer;
 using Microsoft.Extensions.Options;
-using BIT.Data.Sync.EfCore.Sqlite;
+
 using BIT.Data.Sync.Imp;
 using BIT.Data.Sync;
+using BIT.Data.Sync.EfCore.SQLite;
 
 namespace XafEfCoreSync.Module.BusinessObjects;
 

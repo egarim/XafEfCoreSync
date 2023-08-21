@@ -1,6 +1,6 @@
 ﻿using BIT.Data.Sync;
 using BIT.Data.Sync.Client;
-using BIT.Data.Sync.EfCore.Sqlite;
+using BIT.Data.Sync.EfCore.SQLite;
 using BIT.Data.Sync.EfCore.SqlServer;
 using BIT.Data.Sync.Imp;
 using BIT.EfCore.Sync;
